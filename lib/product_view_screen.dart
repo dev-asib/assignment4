@@ -45,7 +45,7 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
               itemBuilder: (context, index) {
                 return _buildProductListItem(productList[index]);
               },
-              separatorBuilder: (_,__) {
+              separatorBuilder: (_, __) {
                 return Divider(
                   color: Colors.transparent,
                   height: 8,
@@ -104,25 +104,26 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
     );
   }
 
-
-  Widget _buildProductListItem(ProductModel product){
+  Widget _buildProductListItem(ProductModel product) {
     return ListTile(
       leading: Container(
         height: 60,
         width: 60,
         decoration: BoxDecoration(
+          color: Colors.deepPurple,
           image: DecorationImage(
-              image: NetworkImage(product.image??""),
-              fit: BoxFit.fill),
+            image: NetworkImage(product.image ?? ""),
+            fit: BoxFit.fill,
+          ),
         ),
       ),
-      title: Text(product.productName??"Unknown"),
+      title: Text(product.productName ?? "Unknown"),
       subtitle: Wrap(
         spacing: 16,
         children: [
-          Text("Unit Price: ${product.unitPrice??""}"),
-          Text("Quantity: ${product.quantity??""}"),
-          Text("Total Price: ${product.quantity??""}"),
+          Text("Unit Price: ${product.unitPrice ?? ""}"),
+          Text("Quantity: ${product.quantity ?? ""}"),
+          Text("Total Price: ${product.quantity ?? ""}"),
         ],
       ),
       trailing: Wrap(
@@ -148,8 +149,8 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
           ),
           IconButton(
             onPressed: () {
-                _buildDeleteMessage(context,product);
-              },
+              _buildDeleteMessage(context, product);
+            },
             icon: Icon(
               Icons.delete,
               color: Colors.red,
@@ -160,9 +161,9 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
     );
   }
 
-
-
   Future<void> _getProductList() async {
+
+  try{
     _getProductInProgress = true;
     setState(() {});
 
@@ -184,26 +185,37 @@ class _ProductViewScreenState extends State<ProductViewScreen> {
     }
     _getProductInProgress = false;
     setState(() {});
+  } catch(e){
+    print("Exception: ${e.toString()}");
+  }
+
   }
 
   Future<void> _deleteProduct(String productID) async {
-    _getProductInProgress = true;
-    setState(() {});
 
-    String url = "https://crud.teamrabbil.com/api/v1/DeleteProduct/$productID";
-    Uri uri = Uri.parse(url);
-    Response response = await get(uri);
-
-    print(response.statusCode);
-    print(response.body);
-
-    if (response.statusCode == 200) {
-      _getProductList();
-    } else {
-      _getProductInProgress = false;
+    try{
+      _getProductInProgress = true;
       setState(() {});
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Get product list faild! Try again..")));
+
+      String url = "https://crud.teamrabbil.com/api/v1/DeleteProduct/$productID";
+      Uri uri = Uri.parse(url);
+      Response response = await get(uri);
+
+      print(response.statusCode);
+      print(response.body);
+
+      if (response.statusCode == 200) {
+        _getProductList();
+      } else {
+        _getProductInProgress = false;
+        setState(() {});
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Get product list faild! Try again..")));
+      }
+    } catch(e){
+      print("Exception : ${e.toString()}");
     }
+
+
   }
 }

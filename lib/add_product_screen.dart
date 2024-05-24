@@ -166,6 +166,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
 
   Future<void> _addProduct() async {
+
+
+  try{
     _addProductInProgrress = true;
     setState(() {});
 
@@ -204,6 +207,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
     _addProductInProgrress = false;
     setState(() {});
+  } catch(e){
+    print("Exception: ${e.toString()}");
+  }
+
+
   }
 
 

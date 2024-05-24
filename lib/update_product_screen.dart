@@ -180,35 +180,40 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
   }
 
   Future<void> _updateProduct() async {
-    _updateProductInProgrress = true;
-    setState(() {});
-    Map<String, String> inputData = {
-      "Img": _imageTEController.text,
-      "ProductCode": _productCodeTEController.text,
-      "ProductName": _titleTEController.text,
-      "Qty": _quantityTEController.text,
-      "TotalPrice": _totalPriceTEController.text,
-      "UnitPrice": _unitPriceTEController.text,
-    };
-    String updateProductUrl =
-        "https://crud.teamrabbil.com/api/v1/UpdateProduct/${widget.productModel.id}";
-    Uri uri = Uri.parse(updateProductUrl);
-    Response response = await post(uri,
-        headers: {'content-type': 'application/json'},
-        body: jsonEncode(inputData));
 
-    if(response.statusCode == 200){
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Product has been updated.")),
-      );
+    try{
+      _updateProductInProgrress = true;
+      setState(() {});
+      Map<String, String> inputData = {
+        "Img": _imageTEController.text,
+        "ProductCode": _productCodeTEController.text,
+        "ProductName": _titleTEController.text,
+        "Qty": _quantityTEController.text,
+        "TotalPrice": _totalPriceTEController.text,
+        "UnitPrice": _unitPriceTEController.text,
+      };
+      String updateProductUrl =
+          "https://crud.teamrabbil.com/api/v1/UpdateProduct/${widget.productModel.id}";
+      Uri uri = Uri.parse(updateProductUrl);
+      Response response = await post(uri,
+          headers: {'content-type': 'application/json'},
+          body: jsonEncode(inputData));
 
-      Navigator.pop(context, true);
+      if(response.statusCode == 200){
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Product has been updated.")),
+        );
 
-    }
-    else{
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Product Update faild! Try again.")),
-      );
+        Navigator.pop(context, true);
+
+      }
+      else{
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Product Update faild! Try again.")),
+        );
+      }
+    } catch(e){
+      print("Exception: ${e.toString()}");
     }
 
   }
